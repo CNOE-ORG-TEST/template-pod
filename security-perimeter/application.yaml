@@ -6,7 +6,7 @@ metadata:
   labels:
     created-by: backstage
 spec:
-  project: reply-platform-microservice
+  project: ${{ values.name }}-project
   source:
     repoURL: ${{ values.repoUrl }}
     targetRevision: HEAD
