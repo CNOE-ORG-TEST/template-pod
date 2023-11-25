@@ -1,7 +1,7 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: Reply-platform-microservice
+  name: reply-platform-microservice
   title: Create Reply platform microservice
   description: Create the security perimeter for the platform microservice
 spec:
