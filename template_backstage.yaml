@@ -89,5 +89,5 @@ spec:
       name: Register
       action: catalog:register
       input:
-        repoContentsUrl: ${{ steps['init-repo'].output.repoContentsUrl }}
+        repoContentsUrl: ${{ steps['init-applicative-repo'].output.repoContentsUrl }}
         catalogInfoPath: '/catalog-info.yaml'
