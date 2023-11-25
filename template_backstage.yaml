@@ -31,7 +31,7 @@ spec:
               kind: Group
         clusterName:
           title: Cluster to run
-          description: The cluster to run this job in. 
+          description: The cluster to run this job in.
           type: string
           ui:field: KubernetesClusterPicker
         repoUrl:
@@ -53,8 +53,8 @@ spec:
       name: Fetch Applicative Template
       action: fetch:template
       input:
-        url: ./backstage-component-workflow/applicative-template/
-        targetPath: ./backstage-component-workflow/applicative-template-compiled/
+        url: ./applicative-template/
+        targetPath: ./applicative-template-compiled/
         values:
           project_id: ${{ parameters.project_id }} #Parametro sostituito nel file applicative-template/nginx.yaml
           owner: ${{ parameters.owner }} #Parametro sostituito nel file applicative-template/infrastructure/k8s/catalog-info.yaml
@@ -64,7 +64,7 @@ spec:
       input:
         repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: main
-        sourcePath: ./backstage-component-workflow/applicative-template-compiled/
+        sourcePath: ./applicative-template-compiled/
     - id: wait
       name: Waiting for the repo to be ready
       action: "roadiehq:utils:sleep"
@@ -74,8 +74,8 @@ spec:
       name: Fetch Base
       action: fetch:template
       input:
-        url: ./backstage-component-cd/backstage-template/
-        targetPath: backstage-component-cd/backstage-template-compiled
+        url: ./backstage-template/
+        targetPath: backstage-template-compiled
         values:
           namespace: ${{ parameters.project_id }}-namespace #Parametro sostituito nel template namespace.yaml
           repoUrl: ${{ parameters.repoUrl }} #Parametro sostituito nel template application.yaml
@@ -84,33 +84,41 @@ spec:
       name: Apply namespace
       action: cnoe:kubernetes:apply
       input:
-        manifestPath: ./backstage-component-cd/backstage-template-compiled/namespace.yaml
+        manifestPath: ./backstage-template-compiled/namespace.yaml
         namespaced: false
         clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
-#    - id: apply-argocd-application-project
-#      name: Apply argocd application project
-#      action: cnoe:kubernetes:apply
-#      input:
-#        manifestPath: ./backstage-component-cd/backstage-template-compiled/application-project.yaml
-#        namespaced: true
-#        clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
+    - id: apply-workflow-template
+      name: Apply workflow template
+      action: cnoe:kubernetes:apply
+      input:
+        manifestPath: ./backstage-template-compiled/argo_workflow_template.yaml
+        namespaced: false
+        clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
+    - id: apply-workflow
+      name: Apply workflow
+      action: cnoe:kubernetes:apply
+      input:
+        manifestPath: ./backstage-template-compiled/argo_workflow.yaml
+        namespaced: false
+        clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
+    #    - id: apply-argocd-application-project
+    #      name: Apply argocd application project
+    #      action: cnoe:kubernetes:apply
+    #      input:
+    #        manifestPath: ./backstage-component-cd/backstage-template-compiled/application-project.yaml
+    #        namespaced: true
+    #        clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
     - id: apply-argocd-application
       name: Apply argocd application
       action: cnoe:kubernetes:apply
       input:
-        manifestPath: ./backstage-component-cd/backstage-template-compiled/application.yaml
+        manifestPath: ./backstage-template-compiled/application.yaml
         namespaced: true
         clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
-    - id: register-workflow
-      name: Register workflow
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps['init-applicative-repo'].output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info-workflow.yaml'
 
     - id: register-cd
       name: Register cd
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps['init-applicative-repo'].output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info-cd.yaml'
+        catalogInfoPath: "/catalog-info-cd.yaml"
