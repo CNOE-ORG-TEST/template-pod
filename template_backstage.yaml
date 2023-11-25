@@ -1,0 +1,41 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: simple-nginx-pod
+  title: Create a simple nginx pod
+  description: Create a simple nginx pod
+spec:
+  owner: guest
+  type: job
+  parameters:
+    - title: Configuration Options
+      required:
+        - namespace
+      properties:
+        namespace:
+          title: Namespace
+          type: string
+          default: default
+          description: Namespace in which this should be created
+          ui:options:
+            rows: 5
+        clusterName:
+          title: Cluster to run
+          description: The cluster to run this job in. 
+          type: string
+          ui:field: KubernetesClusterPicker
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./templates-pod/
+        values:
+          namespace: ${{ parameters.namespace }}
+    - id: apply-sa
+      name: apply sa
+      action: cnoe:kubernetes:apply
+      input:
+        manifestPath: pod.yaml
+        namespaced: true
+        clusterName: ${{ parameters.clusterName }}
