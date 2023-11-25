@@ -1,9 +1,9 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: simple-nginx-pod
-  title: Create a simple nginx pod
-  description: Create a simple nginx pod
+  name: Reply-platform-microservice
+  title: Create Reply platform microservice
+  description: Create the security perimeter for the platform microservice
 spec:
   owner: guest
   type: job
@@ -29,13 +29,12 @@ spec:
       name: Fetch Base
       action: fetch:template
       input:
-        url: ./templates-pod/
+        url: ./templates/
         values:
-          namespace: ${{ parameters.namespace }}
-    - id: apply-sa
-      name: apply sa
+          namespace: ${{ parameters.namespace }} #Parametro sostituito nel template namespace.yaml
+    - id: apply-namespace
+      name: apply namespace
       action: cnoe:kubernetes:apply
       input:
-        manifestPath: pod.yaml
-        namespaced: true
-        clusterName: ${{ parameters.clusterName }}
+        manifestPath: namespace.yaml
+        clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
