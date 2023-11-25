@@ -78,12 +78,21 @@ spec:
         targetPath: security-perimeter-compiled
         values:
           namespace: ${{ parameters.project_id }}-namespace #Parametro sostituito nel template namespace.yaml
+          repoUrl: ${{ parameters.repoUrl }} #Parametro sostituito nel template application.yaml
+          name: ${{ parameters.project_id }}-application #Parametro sostituito nel template application.yaml
     - id: apply-namespace
       name: apply namespace
       action: cnoe:kubernetes:apply
       input:
         manifestPath: ./security-perimeter-compiled/namespace.yaml
         namespaced: false
+        clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
+    - id: apply-argocd-application
+      name: apply argocd application
+      action: cnoe:kubernetes:apply
+      input:
+        manifestPath: ./security-perimeter-compiled/application.yaml
+        namespaced: true
         clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
     - id: register
       name: Register
