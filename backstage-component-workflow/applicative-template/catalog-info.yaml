@@ -4,8 +4,9 @@ metadata:
   name: "${{values.project_id}}-component"
   description: Microservice component for the platform
   annotations:
-    argocd/app-name: ${{values.name | dump}}
+    argo-workflows.cnoe.io/label-selector: "env=dev,project-id=${{values.project_id}}"
+    argo-workflows.cnoe.io/cluster-name: local
 spec:
   type: service
   lifecycle: experimental
-  owner:  ${{values.owner | dump}}
+  owner: ${{values.owner | dump}}

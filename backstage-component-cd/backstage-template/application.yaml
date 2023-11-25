@@ -6,11 +6,11 @@ metadata:
   labels:
     created-by: backstage
 spec:
-  project: ${{ values.name }}-project
+  project: cnoe-ci-project
   source:
-    repoURL: ${{ values.repoUrl }}
+    repoURL: https://github.com/CNOE-ORG-TEST/cnoe-ci
     targetRevision: HEAD
-    path: /infrastructure/k8s
+    path: "/namespaces/${{values.namespace}}/infrastructure/k8s"
   destination:
     server: https://kubernetes.default.svc
     namespace: "${{values.namespace}}"
