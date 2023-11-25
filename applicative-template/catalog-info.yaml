@@ -3,6 +3,8 @@ kind: Component
 metadata:
   name: "${{values.project_id}}-component"
   description: Microservice component for the platform
+  annotations:
+    argocd/app-name: ${{values.name | dump}}
 spec:
   type: service
   lifecycle: experimental
