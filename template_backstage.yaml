@@ -118,6 +118,13 @@ spec:
         namespaced: true
         clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
 
+    - id: register-workflow
+      name: Register workflow
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['init-applicative-repo'].output.repoContentsUrl }}
+        catalogInfoPath: "/catalog-info-workflow.yaml"
+
     - id: register-cd
       name: Register cd
       action: catalog:register
