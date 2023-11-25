@@ -6,4 +6,3 @@ metadata:
 spec:
   targets:
     - ./template_backstage.yaml
-
