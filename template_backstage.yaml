@@ -37,4 +37,5 @@ spec:
       action: cnoe:kubernetes:apply
       input:
         manifestPath: namespace.yaml
+        namespaced: false
         clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
