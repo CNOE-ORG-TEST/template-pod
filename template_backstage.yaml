@@ -11,6 +11,7 @@ spec:
     - title: Configuration Options
       required:
         - project_id
+        - repoUrl
       properties:
         project_id:
           title: Project ID
@@ -33,12 +34,21 @@ spec:
           description: The cluster to run this job in. 
           type: string
           ui:field: KubernetesClusterPicker
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+            allowedOrganizations:
+              - CNOE-ORG-TEST
   steps:
     - id: create-repo
       name: Create Platform applicative repository
       action: github:repo:create
       input:
-        repoUrl: ${{ parameters.project_id }}-repo
+        repoUrl: ${{ parameters.repoUrl }}
     - id: fetch-applicative-template
       name: Fetch Applicative Template
       action: fetch:template
@@ -52,7 +62,7 @@ spec:
       name: Initialize Applicative Repository
       action: github:repo:push
       input:
-        repoUrl: ${{ parameters.project_id }}-repo
+        repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: main
         sourcePath: ./applicative-template-compiled/
     - id: wait
