@@ -87,6 +87,13 @@ spec:
         manifestPath: ./security-perimeter-compiled/namespace.yaml
         namespaced: false
         clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
+    - id: apply-argocd-application-project
+      name: Apply argocd application project
+      action: cnoe:kubernetes:apply
+      input:
+        manifestPath: ./security-perimeter-compiled/application-project.yaml
+        namespaced: true
+        clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
     - id: apply-argocd-application
       name: Apply argocd application
       action: cnoe:kubernetes:apply

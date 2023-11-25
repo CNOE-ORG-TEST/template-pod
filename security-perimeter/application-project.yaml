@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  #finalizers:
+  #- resources-finalizer.argocd.argoproj.io
+  name: ${{ values.name }}-project
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+  - group: ''
+    kind: ''
+  description: Argo project for the application ${{ values.name }}
+  destinations:
+  - namespace: "${{values.namespace}}"
+    server: https://kubernetes.default.svc
+  sourceRepos:
+  - "${{ values.repoUrl }}"
