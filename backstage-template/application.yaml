@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ${{ values.name }}
+  namespace: argocd
+  labels:
+    created-by: backstage
+spec:
+  project: cnoe-ci-project
+  source:
+    repoURL: https://github.com/CNOE-ORG-TEST/cnoe-ci
+    targetRevision: HEAD
+    path: "/namespaces/${{values.namespace}}/infrastructure/k8s"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: "${{values.namespace}}"
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=false
