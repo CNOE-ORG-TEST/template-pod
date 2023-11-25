@@ -53,8 +53,8 @@ spec:
       name: Fetch Applicative Template
       action: fetch:template
       input:
-        url: ./applicative-template/
-        targetPath: ./applicative-template-compiled/
+        url: ./backstage-component-workflow/applicative-template/
+        targetPath: ./backstage-component-workflow/applicative-template-compiled/
         values:
           project_id: ${{ parameters.project_id }} #Parametro sostituito nel file applicative-template/nginx.yaml
           owner: ${{ parameters.owner }} #Parametro sostituito nel file applicative-template/infrastructure/k8s/catalog-info.yaml
@@ -64,7 +64,7 @@ spec:
       input:
         repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: main
-        sourcePath: ./applicative-template-compiled/
+        sourcePath: ./backstage-component-workflow/applicative-template-compiled/
     - id: wait
       name: Waiting for the repo to be ready
       action: "roadiehq:utils:sleep"
@@ -74,8 +74,8 @@ spec:
       name: Fetch Base
       action: fetch:template
       input:
-        url: ./security-perimeter/
-        targetPath: security-perimeter-compiled
+        url: ./backstage-component-cd/backstage-template/
+        targetPath: backstage-component-cd/backstage-template-compiled
         values:
           namespace: ${{ parameters.project_id }}-namespace #Parametro sostituito nel template namespace.yaml
           repoUrl: ${{ parameters.repoUrl }} #Parametro sostituito nel template application.yaml
@@ -84,26 +84,33 @@ spec:
       name: Apply namespace
       action: cnoe:kubernetes:apply
       input:
-        manifestPath: ./security-perimeter-compiled/namespace.yaml
+        manifestPath: ./backstage-component-cd/backstage-template-compiled/namespace.yaml
         namespaced: false
         clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
-    - id: apply-argocd-application-project
-      name: Apply argocd application project
-      action: cnoe:kubernetes:apply
-      input:
-        manifestPath: ./security-perimeter-compiled/application-project.yaml
-        namespaced: true
-        clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
+#    - id: apply-argocd-application-project
+#      name: Apply argocd application project
+#      action: cnoe:kubernetes:apply
+#      input:
+#        manifestPath: ./backstage-component-cd/backstage-template-compiled/application-project.yaml
+#        namespaced: true
+#        clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
     - id: apply-argocd-application
       name: Apply argocd application
       action: cnoe:kubernetes:apply
       input:
-        manifestPath: ./security-perimeter-compiled/application.yaml
+        manifestPath: ./backstage-component-cd/backstage-template-compiled/application.yaml
         namespaced: true
         clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
-    - id: register
-      name: Register
+    - id: register-workflow
+      name: Register workflow
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps['init-applicative-repo'].output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info.yaml'
+        catalogInfoPath: '/catalog-info-workflow.yaml'
+
+    - id: register-cd
+      name: Register cd
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['init-applicative-repo'].output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info-cd.yaml'
