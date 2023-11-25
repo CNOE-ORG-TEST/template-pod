@@ -58,6 +58,8 @@ spec:
         values:
           project_id: ${{ parameters.project_id }} #Parametro sostituito nel file applicative-template/nginx.yaml
           owner: ${{ parameters.owner }} #Parametro sostituito nel file applicative-template/infrastructure/k8s/catalog-info.yaml
+          name: ${{ parameters.project_id }}-application #Parametro sostituito nel template application.yaml
+
     - id: init-applicative-repo
       name: Initialize Applicative Repository
       action: github:repo:push
