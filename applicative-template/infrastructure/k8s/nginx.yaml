@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+    project: "${{values.project_id}}"
+  name: nginx
+  namespace: "${{values.project_id}}-namespace"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  strategy: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}

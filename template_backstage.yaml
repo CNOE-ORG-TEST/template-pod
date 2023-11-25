@@ -10,32 +10,74 @@ spec:
   parameters:
     - title: Configuration Options
       required:
-        - namespace
+        - project_id
       properties:
-        namespace:
-          title: Namespace
+        project_id:
+          title: Project ID
           type: string
-          default: default
-          description: Namespace in which this should be created
+          default: glin-ap31312-dev
+          description: Project id of the Platform microservice
           ui:options:
             rows: 5
+        owner:
+          title: Owner
+          type: string
+          default: guest
+          description: Owner of the component
+          ui:field: OwnerPicker
+          ui:options:
+            catalogFilter:
+              kind: Group
         clusterName:
           title: Cluster to run
           description: The cluster to run this job in. 
           type: string
           ui:field: KubernetesClusterPicker
   steps:
+    - id: create-repo
+      name: Create Platform applicative repository
+      action: github:repo:create
+      input:
+        repoUrl: ${{ parameters.project_id }}-repo
+    - id: fetch-applicative-template
+      name: Fetch Applicative Template
+      action: fetch:template
+      input:
+        url: ./applicative-template/
+        targetPath: ./applicative-template-compiled/
+        values:
+          project_id: ${{ parameters.project_id }} #Parametro sostituito nel file applicative-template/nginx.yaml
+          owner: ${{ parameters.owner }} #Parametro sostituito nel file applicative-template/infrastructure/k8s/catalog-info.yaml
+    - id: init-applicative-repo
+      name: Initialize Applicative Repository
+      action: github:repo:push
+      input:
+        repoUrl: ${{ parameters.project_id }}-repo
+        defaultBranch: main
+        sourcePath: ./applicative-template-compiled/
+    - id: wait
+      name: Waiting for the repo to be ready
+      action: "roadiehq:utils:sleep"
+      input:
+        amount: 5
     - id: fetch-base
       name: Fetch Base
       action: fetch:template
       input:
-        url: ./templates/
+        url: ./security-perimeter/
+        targetPath: security-perimeter-compiled
         values:
-          namespace: ${{ parameters.namespace }} #Parametro sostituito nel template namespace.yaml
+          namespace: ${{ parameters.project_id }}-namespace #Parametro sostituito nel template namespace.yaml
     - id: apply-namespace
       name: apply namespace
       action: cnoe:kubernetes:apply
       input:
-        manifestPath: namespace.yaml
+        manifestPath: ./security-perimeter-compiled/namespace.yaml
         namespaced: false
         clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['init-repo'].output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
