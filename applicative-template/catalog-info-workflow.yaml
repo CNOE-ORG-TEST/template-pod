@@ -5,7 +5,7 @@ metadata:
   description: Microservice component for the platform
   annotations:
     argo-workflows.cnoe.io/label-selector: "project-id=${{values.project_id}}"
-#    argo-workflows.cnoe.io/cluster-name: local
+    argo-workflows.cnoe.io/cluster-name: local
 spec:
   type: service
   lifecycle: experimental
