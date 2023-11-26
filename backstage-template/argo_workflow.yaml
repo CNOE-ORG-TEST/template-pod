@@ -4,7 +4,7 @@ metadata:
   generateName: workflow-template-hello-world-
   namespace: "${{values.namespace}}"
   labels:
-    project_id: "${{values.project-id}}"
+    project_id: "${{values.project_id}}"
 spec:
   entrypoint: whalesay
   templates:

@@ -4,12 +4,12 @@ metadata:
   name: workflow-template-whalesay-template
   namespace: "${{values.namespace}}"
   labels:
-    project-id: "${{values.project-id}}"
+    project-id: "${{values.project_id}}"
 spec:
   workflowMetadata:
     namespace: "${{values.namespace}}"
     labels:
-      project-id: "${{values.project-id}}"
+      project-id: "${{values.project_id}}"
   entrypoint: whalesay-template
   onExit: on-exit
   arguments:
