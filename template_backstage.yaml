@@ -82,6 +82,8 @@ spec:
           namespace: ${{ parameters.project_id }}-namespace #Parametro sostituito nel template namespace.yaml
           repoUrl: ${{ parameters.repoUrl }} #Parametro sostituito nel template application.yaml
           name: ${{ parameters.project_id }}-application #Parametro sostituito nel template application.yaml
+          project_id: ${{ parameters.project_id }} #Parametro sostituito nel file applicative-template/nginx.yaml
+
     - id: apply-namespace
       name: Apply namespace
       action: cnoe:kubernetes:apply
