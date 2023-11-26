@@ -82,8 +82,6 @@ spec:
           namespace: ${{ parameters.project_id }}-namespace #Parametro sostituito nel template namespace.yaml
           repoUrl: ${{ parameters.repoUrl }} #Parametro sostituito nel template application.yaml
           name: ${{ parameters.project_id }}-application #Parametro sostituito nel template application.yaml
-          project_id: ${{ parameters.project_id }} #Parametro sostituito nel file applicative-template/nginx.yaml
-
     - id: apply-namespace
       name: Apply namespace
       action: cnoe:kubernetes:apply
@@ -96,14 +94,14 @@ spec:
       action: cnoe:kubernetes:apply
       input:
         manifestPath: ./backstage-template-compiled/argo_workflow_template.yaml
-        namespaced: true
+        namespaced: false
         clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
     - id: apply-workflow
       name: Apply workflow
       action: cnoe:kubernetes:apply
       input:
         manifestPath: ./backstage-template-compiled/argo_workflow.yaml
-        namespaced: true
+        namespaced: false
         clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
     #    - id: apply-argocd-application-project
     #      name: Apply argocd application project
