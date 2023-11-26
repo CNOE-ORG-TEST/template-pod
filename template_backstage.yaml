@@ -94,14 +94,14 @@ spec:
       action: cnoe:kubernetes:apply
       input:
         manifestPath: ./backstage-template-compiled/argo_workflow_template.yaml
-        namespaced: false
+        namespaced: true
         clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
     - id: apply-workflow
       name: Apply workflow
       action: cnoe:kubernetes:apply
       input:
         manifestPath: ./backstage-template-compiled/argo_workflow.yaml
-        namespaced: false
+        namespaced: true
         clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
     #    - id: apply-argocd-application-project
     #      name: Apply argocd application project

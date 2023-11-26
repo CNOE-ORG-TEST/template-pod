@@ -2,10 +2,12 @@ apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
   name: workflow-template-whalesay-template
+  namespace: default
   labels:
     project-id: "${{values.project_id}}"
 spec:
   workflowMetadata:
+    namespace: default
     labels:
       project-id: "${{values.project_id}}"
   entrypoint: whalesay-template

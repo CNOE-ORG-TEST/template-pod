@@ -2,8 +2,9 @@ apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
   generateName: workflow-template-hello-world-
+  namespace: default
   labels:
-    project_id: "${{values.project_id}}"
+    project-id: "${{values.project_id}}"
 spec:
   entrypoint: whalesay
   templates:
