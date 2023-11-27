@@ -10,21 +10,29 @@ spec:
     namespace: default
     labels:
       project-id: "${{values.project_id}}"
-  entrypoint: whalesay-template
+  entrypoint: clone-repo
   onExit: on-exit
   arguments:
     parameters:
       - name: message
         value: hello world
   templates:
-    - name: whalesay-template
-      inputs:
-        parameters:
-          - name: message
+    - name: clone-repo
       container:
-        image: argoproj/argosay:v2
-        args: ["echo", "{{inputs.parameters.message}}"]
-    - name: on-exit
-      container:
-        image: argoproj/argosay:v2
-        args: ["echo", "Exit Handler"]
+        image: alpine/git
+        command: [sh, -c]
+        env:
+          - name: GIT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: user-github-tobedeleted
+                key: username
+          - name: GIT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: github-token
+                key: password
+        args:
+          - |
+            git clone https://$GIT_USERNAME:$(echo $GIT_PASSWORD)@github.com/CNOE-ORG-TEST/${{values.project_id}}.git
+            ls -la
