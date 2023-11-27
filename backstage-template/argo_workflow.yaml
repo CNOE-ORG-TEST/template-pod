@@ -1,19 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  generateName: workflow-template-hello-world-
+  generateName: "workflow-${{values.project_id}}-"
   namespace: default
   labels:
     project-id: "${{values.project_id}}"
 spec:
-  entrypoint: whalesay
+  entrypoint: main
   templates:
-    - name: whalesay
+    - name: main
       steps:
-        - - name: call-whalesay-template
+        - - name: main-template
             templateRef:
-              name: workflow-template-whalesay-template
-              template: whalesay-template
+              name: "workflow-template-${{values.project_id}}"
+              template: clone-repo
             arguments:
               parameters:
                 - name: message
