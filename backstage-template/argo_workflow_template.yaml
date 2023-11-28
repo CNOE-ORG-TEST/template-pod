@@ -30,9 +30,35 @@ spec:
           - name: GIT_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: github-token
+                name: github-token-argo-workflow
                 key: password
         args:
-          - |
-            git clone https://$GIT_USERNAME:$(echo $GIT_PASSWORD)@github.com/CNOE-ORG-TEST/${{values.project_id}}.git
-            ls -la
+        - |
+          echo starting git clone
+          git clone https://$GIT_USERNAME:$(echo $GIT_PASSWORD)@github.com/CNOE-ORG-TEST/{{values.project_id}}-component.git
+          git clone https://$GIT_USERNAME:$(echo $GIT_PASSWORD)@github.com/CNOE-ORG-TEST/cnoe-ci.git
+          ls -la
+          
+          # Create the destination folder if it doesn't exist
+          mkdir -p cnoe-ci/namespaces/{{values.project_id}}-namespace
+          
+          rm {{values.project_id}}-component/catalog-info-workflow.yaml
+          rm {{values.project_id}}-component/catalog-info-cd.yaml
+          
+          # Copy the contents of the source folder to the destination folder
+          cp -r {{values.project_id}}-component/* cnoe-ci/namespaces/{{values.project_id}}-namespace
+          
+          echo "Contents copied successfully from $source_folder to $destination_folder"
+          
+          
+          cd cnoe-ci
+          
+          git config --global user.email "argoWorkflow@example.com"
+          git config --global user.name "Argo Workflow"
+          
+          git add .
+          git commit -m "CD pipeline argo Workflow"
+          
+          git push -u https://$GIT_USERNAME:$(echo $GIT_PASSWORD)@github.com/CNOE-ORG-TEST/cnoe-ci.git main
+          
+          echo "Pushed to cnoe-ci"
