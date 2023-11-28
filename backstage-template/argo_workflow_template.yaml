@@ -22,6 +22,8 @@ spec:
         image: alpine/git
         command: [sh, -c]
         env:
+          - name: PROJECT_ID
+            value: "${{values.project_id}}"
           - name: GIT_USERNAME
             valueFrom:
               secretKeyRef:
@@ -35,18 +37,18 @@ spec:
         args:
         - |
           echo starting git clone
-          git clone https://$GIT_USERNAME:$(echo $GIT_PASSWORD)@github.com/CNOE-ORG-TEST/{{values.project_id}}-component.git
+          git clone https://$GIT_USERNAME:$(echo $GIT_PASSWORD)@github.com/CNOE-ORG-TEST/$PROJECT_ID-component.git
           git clone https://$GIT_USERNAME:$(echo $GIT_PASSWORD)@github.com/CNOE-ORG-TEST/cnoe-ci.git
           ls -la
           
           # Create the destination folder if it doesn't exist
-          mkdir -p cnoe-ci/namespaces/{{values.project_id}}-namespace
+          mkdir -p cnoe-ci/namespaces/$PROJECT_ID-namespace
           
-          rm {{values.project_id}}-component/catalog-info-workflow.yaml
-          rm {{values.project_id}}-component/catalog-info-cd.yaml
+          rm $PROJECT_ID-component/catalog-info-workflow.yaml
+          rm $PROJECT_ID-component/catalog-info-cd.yaml
           
           # Copy the contents of the source folder to the destination folder
-          cp -r {{values.project_id}}-component/* cnoe-ci/namespaces/{{values.project_id}}-namespace
+          cp -r $PROJECT_ID-component/* cnoe-ci/namespaces/$PROJECT_ID-namespace
           
           echo "Contents copied successfully from $source_folder to $destination_folder"
           
