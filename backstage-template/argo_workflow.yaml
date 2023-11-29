@@ -10,7 +10,10 @@ spec:
   templates:
     - name: main
       steps:
+        - - name: approval
+            template: approval
         - - name: main-template
+            when: "{{steps.approval.outputs.parameters.approve}} == YES"
             templateRef:
               name: "workflow-template-${{values.project_id}}"
               template: clone-repo
@@ -18,3 +21,20 @@ spec:
               parameters:
                 - name: message
                   value: "hello world"
+
+    - name: approval
+      suspend:
+        duration: "1h"
+      inputs:
+        parameters:
+          - name: approve
+            description: "The options to show on the dropdown in Argo UI."
+            default: "NO"
+            enum:
+              - "YES"
+              - "NO"
+      outputs:
+        parameters:
+          - name: approve
+            valueFrom:
+              supplied: {}
