@@ -38,7 +38,7 @@ spec:
       name: Create Platform applicative repository
       action: github:repo:create
       input:
-        repoUrl: github.com?owner=CNOE-ORG-TEST&repo=${{ parameters.project_id }}&organization=CNOE-ORG-TEST
+        repoUrl: github.com?owner=CNOE-ORG-TEST&repo=${{ parameters.project_id }}-repo&organization=CNOE-ORG-TEST
     - id: fetch-applicative-template
       name: Fetch Applicative Template
       action: fetch:template
@@ -54,7 +54,7 @@ spec:
       name: Initialize Applicative Repository
       action: github:repo:push
       input:
-        repoUrl: github.com?owner=CNOE-ORG-TEST&repo=${{ parameters.project_id }}&organization=CNOE-ORG-TEST
+        repoUrl: github.com?owner=CNOE-ORG-TEST&repo=${{ parameters.project_id }}-repo&organization=CNOE-ORG-TEST
         defaultBranch: main
         sourcePath: ./applicative-template-compiled/
     - id: wait
@@ -70,7 +70,7 @@ spec:
         targetPath: backstage-template-compiled
         values:
           namespace: ${{ parameters.project_id }}-namespace #Parametro sostituito nel template namespace.yaml
-          repoUrl: github.com?owner=CNOE-ORG-TEST&repo=${{ parameters.project_id }}&organization=CNOE-ORG-TEST #Parametro sostituito nel template application.yaml
+          repoUrl: github.com?owner=CNOE-ORG-TEST&repo=${{ parameters.project_id }}-repo&organization=CNOE-ORG-TEST #Parametro sostituito nel template application.yaml
           name: ${{ parameters.project_id }}-application #Parametro sostituito nel template application.yaml
           project_id: ${{ parameters.project_id }} #Parametro sostituito nel file applicative-template/nginx.yaml
 
