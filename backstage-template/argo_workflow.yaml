@@ -16,7 +16,7 @@ spec:
             when: "{{steps.approval.outputs.parameters.approve}} == YES"
             templateRef:
               name: "workflow-template-${{values.project_id}}"
-              template: clone-repo
+              template: main
             arguments:
               parameters:
                 - name: message

@@ -112,13 +112,13 @@ spec:
     #        manifestPath: ./backstage-component-cd/backstage-template-compiled/application-project.yaml
     #        namespaced: true
     #        clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
-    - id: apply-argocd-application
-      name: Apply argocd application
-      action: cnoe:kubernetes:apply
-      input:
-        manifestPath: ./backstage-template-compiled/application.yaml
-        namespaced: true
-        clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
+    # - id: apply-argocd-application
+    #   name: Apply argocd application
+    #   action: cnoe:kubernetes:apply
+    #   input:
+    #     manifestPath: ./backstage-template-compiled/application.yaml
+    #     namespaced: true
+    #     clusterName: ${{ parameters.clusterName }} #Parametro usato dall'action per identificare il cluster name
 
     - id: register-workflow
       name: Register workflow

@@ -17,6 +17,6 @@ spec:
         app: nginx
     spec:
       containers:
-      - image: nginx
+      - image: __ECR_IMAGE__
         name: nginx
         resources: {}

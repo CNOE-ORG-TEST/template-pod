@@ -10,57 +10,35 @@ spec:
     namespace: default
     labels:
       project-id: "${{values.project_id}}"
-  entrypoint: clone-repo
+  entrypoint: main
   onExit: on-exit
-  arguments:
-    parameters:
-      - name: message
-        value: hello world
   templates:
-    - name: clone-repo
+    - name: main
+      inputs: {}
+      outputs: {}
+      metadata: {}
+      steps:
+        - - name: build-and-deploy-step
+            template: build-and-deploy-step
+            arguments: {}
+    - name: build-and-deploy-step
+      inputs: {}
+      outputs: {}
+      metadata: {}
       container:
-        image: alpine/git
-        command: [sh, -c]
+        name: ''
+        image: 523753954008.dkr.ecr.eu-west-1.amazonaws.com/build_and_push_cnoe:0.2.1
         env:
           - name: PROJECT_ID
             value: "${{values.project_id}}"
-          - name: GIT_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: user-github-tobedeleted
-                key: username
-          - name: GIT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: github-token-argo-workflow
-                key: password
-        args:
-        - |
-          echo starting git clone
-          git clone https://$GIT_USERNAME:$(echo $GIT_PASSWORD)@github.com/CNOE-ORG-TEST/$PROJECT_ID-component.git
-          git clone https://$GIT_USERNAME:$(echo $GIT_PASSWORD)@github.com/CNOE-ORG-TEST/cnoe-ci.git
-          ls -la
-          
-          # Create the destination folder if it doesn't exist
-          mkdir -p cnoe-ci/namespaces/$PROJECT_ID-namespace
-          
-          rm $PROJECT_ID-component/catalog-info-workflow.yaml
-          rm $PROJECT_ID-component/catalog-info-cd.yaml
-          
-          # Copy the contents of the source folder to the destination folder
-          cp -r $PROJECT_ID-component/* cnoe-ci/namespaces/$PROJECT_ID-namespace
-          
-          echo "Contents copied successfully from $source_folder to $destination_folder"
-          
-          
-          cd cnoe-ci
-          
-          git config --global user.email "argoWorkflow@example.com"
-          git config --global user.name "Argo Workflow"
-          
-          git add .
-          git commit -m "CD pipeline argo Workflow"
-          
-          git push -u https://$GIT_USERNAME:$(echo $GIT_PASSWORD)@github.com/CNOE-ORG-TEST/cnoe-ci.git main
-          
-          echo "Pushed to cnoe-ci"
+          - name: ECR_CONTAINER_REGISTRY
+            value: 523753954008.dkr.ecr.eu-west-1.amazonaws.com
+        resources: {}
+        securityContext:
+          privileged: true
+  entrypoint: main
+  arguments: {}
+  serviceAccountName: pipeline-sa
+  volumes:
+    - name: workdir
+      emptyDir: {}
