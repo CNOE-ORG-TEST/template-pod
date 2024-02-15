@@ -36,7 +36,6 @@ spec:
         resources: {}
         securityContext:
           privileged: true
-  entrypoint: main
   arguments: {}
   serviceAccountName: pipeline-sa
   volumes:
