@@ -6,6 +6,7 @@ metadata:
   labels:
     project-id: "${{values.project_id}}"
 spec:
+  serviceAccountName: pipeline-sa
   entrypoint: main
   templates:
     - name: main
